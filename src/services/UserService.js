@@ -103,6 +103,37 @@ const updateUser = (id, data) => {
   });
 };
 
+const updatetreatmentCourseUser = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: id,
+      });
+      if (checkUser === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      console.log(data);
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        {
+          $push: { treatmentcourse: data },
+        },
+        { new: true }
+      );
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: updatedUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const deleteUser = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -183,6 +214,7 @@ module.exports = {
   createUser,
   loginUser,
   updateUser,
+  updatetreatmentCourseUser,
   deleteUser,
   getAllUser,
   getDetailsUser,

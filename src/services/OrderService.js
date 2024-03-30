@@ -90,20 +90,6 @@ const createOrder = (newOrder) => {
   });
 };
 
-// const deleteManyProduct = (ids) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             await Product.deleteMany({ _id: ids })
-//             resolve({
-//                 status: 'OK',
-//                 message: 'Delete product success',
-//             })
-//         } catch (e) {
-//             reject(e)
-//         }
-//     })
-// }
-
 const getAllOrderDetails = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -123,7 +109,37 @@ const getAllOrderDetails = (id) => {
         data: order,
       });
     } catch (e) {
-      // console.log('e', e)
+      reject(e);
+    }
+  });
+};
+
+const updateOrder = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkOrder = await Order.findOne({
+        _id: id,
+      });
+      if (checkOrder === null) {
+        resolve({
+          status: "ERR",
+          message: "The order is not defined",
+        });
+      }
+
+      const updateOrder = await Order.findByIdAndUpdate(
+        id,
+        { isPaid: true },
+        {
+          new: true,
+        }
+      );
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: updateOrder,
+      });
+    } catch (e) {
       reject(e);
     }
   });
@@ -229,6 +245,7 @@ const getAllOrder = () => {
 module.exports = {
   createOrder,
   getAllOrderDetails,
+  updateOrder,
   getOrderDetails,
   cancelOrderDetails,
   getAllOrder,
