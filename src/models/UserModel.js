@@ -17,6 +17,13 @@ const userSchema = new mongoose.Schema(
         startat: { type: Date },
       },
     ],
+    treatmenthistory: [
+      {
+        day: { type: Date },
+        doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctors' },
+        information_daily: { type: String },
+      },
+    ],
   },
   {
     timestamps: true,

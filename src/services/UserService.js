@@ -115,11 +115,41 @@ const updatetreatmentCourseUser = (id, data) => {
           message: "The user is not defined",
         });
       }
-      console.log(data);
+
       const updatedUser = await User.findByIdAndUpdate(
         id,
         {
           $push: { treatmentcourse: data },
+        },
+        { new: true }
+      );
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: updatedUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const updatetreatmentHistory = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: id,
+      });
+      if (checkUser === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        {
+          $push: { treatmenthistory: data },
         },
         { new: true }
       );
@@ -215,6 +245,7 @@ module.exports = {
   loginUser,
   updateUser,
   updatetreatmentCourseUser,
+  updatetreatmentHistory,
   deleteUser,
   getAllUser,
   getDetailsUser,
