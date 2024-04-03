@@ -36,6 +36,38 @@ const createDoctor = (newDoctor) => {
   });
 };
 
+const updateTask = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await Doctor.findOne({
+        _id: id,
+      });
+      if (checkUser === null) {
+        resolve({
+          status: "ERR",
+          message: "The Doctor is not defined",
+        });
+      }
+
+      const updatedTask = await Doctor.findByIdAndUpdate(
+        id,
+        {
+          $push: { task: data },
+        },
+        { new: true }
+      );
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: updatedTask,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createDoctor,
+  updateTask,
 };

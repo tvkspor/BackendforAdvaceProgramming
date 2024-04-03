@@ -4,6 +4,7 @@ const DoctorController = require("../controllers/DoctorController");
 const { authMiddleWare } = require("../middleware/authMiddleware");
 
 router.post("/create", DoctorController.createDoctor);
+router.put("/updateTask/:id", DoctorController.updateTask);
 // router.put('/update/:id', authMiddleWare, DoctorController.updateProduct)
 // router.get('/get-details/:id', DoctorController.getDetailsProduct)
 // router.delete('/delete/:id', authMiddleWare, DoctorController.deleteProduct)

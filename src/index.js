@@ -5,6 +5,8 @@ const routes = require('./routes')
 const cors = require('cors');
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const fs = require('fs');
+const multer = require('multer')
 
 dotenv.config()
 
@@ -27,6 +29,8 @@ mongoose.connect(`mongodb+srv://tmtuan120704:tvk553266@cluster0.rxoml7p.mongodb.
     .catch((err) => {
         console.log(err)
     })
+
+
 app.listen(port, () => {
      console.log('Server is running in port: ', + port)
 })

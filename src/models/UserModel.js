@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Doctor = require("./DoctorModel");
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String },
@@ -20,7 +22,7 @@ const userSchema = new mongoose.Schema(
     treatmenthistory: [
       {
         day: { type: Date },
-        doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'doctors' },
+        doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },
         information_daily: { type: String },
       },
     ],
