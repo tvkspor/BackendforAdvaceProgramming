@@ -1,12 +1,16 @@
 const User = require("../models/UserModel");
+const Doctor = require("../models/DoctorModel");
 const bcrypt = require("bcrypt");
 const { genneralAccessToken, genneralRefreshToken } = require("./JwtService");
 
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
-    const { name, email, password, confirmPassword, phone } = newUser;
+    const { email, password, confirmPassword } = newUser;
     try {
       const checkUser = await User.findOne({
+        email: email,
+      });
+      const checkDoctor = await Doctor.findOne({
         email: email,
       });
       if (checkUser !== null) {
@@ -15,13 +19,17 @@ const createUser = (newUser) => {
           message: "The email is already",
         });
       }
+      const isDoctor = false;
       const hash = bcrypt.hashSync(password, 10);
       const createdUser = await User.create({
-        name,
         email,
+        isDoctor,
         password: hash,
-        phone,
       });
+      if (checkDoctor !== null) {
+        createdUser.isDoctor = true;
+        createdUser = await createdUser.save();
+      }
       if (createdUser) {
         resolve({
           status: "OK",
