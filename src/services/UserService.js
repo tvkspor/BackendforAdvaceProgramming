@@ -164,6 +164,29 @@ const updatetreatmentHistory = (id, data) => {
   });
 };
 
+const gettreatmentHistory = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({
+        _id: id,
+      });
+      if (user === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      resolve({
+        status: "OK",
+        message: "SUCESS",
+        data: user.treatmenthistory,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const deleteUser = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -246,6 +269,7 @@ module.exports = {
   updateUser,
   updatetreatmentCourseUser,
   updatetreatmentHistory,
+  gettreatmentHistory,
   deleteUser,
   getAllUser,
   getDetailsUser,

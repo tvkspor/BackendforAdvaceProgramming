@@ -76,7 +76,6 @@ const createOrder = (newOrder) => {
           paidAt,
         });
         if (createdOrder) {
-          //await EmailService.sendEmailCreateOrder(email,orderItems)
           resolve({
             status: "OK",
             message: "success",
@@ -84,7 +83,6 @@ const createOrder = (newOrder) => {
         }
       }
     } catch (e) {
-      //   console.log('e', e)
       reject(e);
     }
   });
@@ -114,7 +112,7 @@ const getAllOrderDetails = (id) => {
   });
 };
 
-const updateOrder = (id) => {
+const updateOrder = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
       const checkOrder = await Order.findOne({
@@ -127,13 +125,9 @@ const updateOrder = (id) => {
         });
       }
 
-      const updateOrder = await Order.findByIdAndUpdate(
-        id,
-        { isPaid: true },
-        {
-          new: true,
-        }
-      );
+      const updateOrder = await Order.findByIdAndUpdate(id, data, {
+        new: true,
+      });
       resolve({
         status: "OK",
         message: "SUCCESS",

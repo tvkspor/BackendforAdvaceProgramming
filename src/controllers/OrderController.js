@@ -46,7 +46,7 @@ const updateOrder = async (req, res) => {
         message: "The userId is required",
       });
     }
-    const response = await OrderService.updateOrder(orderId);
+    const response = await OrderService.updateOrder(orderId, data);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
