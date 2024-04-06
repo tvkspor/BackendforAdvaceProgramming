@@ -36,6 +36,22 @@ const createDoctor = (newDoctor) => {
   });
 };
 
+const getAllDoctor = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allName = await Doctor.distinct("name");
+      resolve({
+        status: "OK",
+        message: "Success",
+        data: allName,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createDoctor,
+  getAllDoctor,
 };

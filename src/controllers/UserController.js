@@ -92,7 +92,7 @@ const updatetreatmentCourseUser = async (req, res) => {
         message: "The userId is required",
       });
     }
-    const response = await UserService.updatetreatmentCourseUser(userId, data);
+    const response = await UserService.updatetreatmentCourseUser(userId);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
@@ -130,6 +130,24 @@ const gettreatmentHistory = async (req, res) => {
       });
     }
     const response = await UserService.gettreatmentHistory(userId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const gettreatment = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The userId is required",
+      });
+    }
+    const response = await UserService.gettreatment(userId);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
@@ -241,6 +259,7 @@ module.exports = {
   updatetreatmentCourseUser,
   updatetreatmentHistory,
   gettreatmentHistory,
+  gettreatment,
   deleteUser,
   getAllUser,
   getDetailsUser,

@@ -5,7 +5,6 @@ const createOrder = async (req, res) => {
     const {
       paymentMethod,
       itemsPrice,
-      shippingPrice,
       totalPrice,
       fullName,
       address,
@@ -15,7 +14,6 @@ const createOrder = async (req, res) => {
     if (
       !paymentMethod ||
       !itemsPrice ||
-      !shippingPrice ||
       !totalPrice ||
       !fullName ||
       !address ||

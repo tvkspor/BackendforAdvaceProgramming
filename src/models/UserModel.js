@@ -12,23 +12,19 @@ const userSchema = new mongoose.Schema(
     city: { type: String },
     dateofbirth: { type: Date },
     sex: { type: String },
-    treatmentcourse: [
-      {
-        name: { type: String },
-        startat: { type: Date },
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
-      },
-    ],
+    treatmentcourse: [{}],
     treatmenthistory: [
       {
         day: { type: String },
         doctor: { type: mongoose.Schema.Types.ObjectId, ref: "doctors" },
         doctorname: { type: String },
         information_daily: { type: String },
+      },
+    ],
+    doctorcourse: [
+      {
+        patientName: { type: String },
+        OrderId: { type: mongoose.Schema.Types.ObjectId, ref: "orders" },
       },
     ],
   },

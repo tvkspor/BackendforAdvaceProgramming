@@ -8,15 +8,13 @@ const createOrder = (newOrder) => {
       orderItems,
       paymentMethod,
       itemsPrice,
-      shippingPrice,
       totalPrice,
       fullName,
       address,
       city,
       phone,
       user,
-      isPaid,
-      paidAt,
+      isChecked,
       email,
     } = newOrder;
     try {
@@ -69,11 +67,9 @@ const createOrder = (newOrder) => {
           },
           paymentMethod,
           itemsPrice,
-          shippingPrice,
           totalPrice,
           user: user,
-          isPaid,
-          paidAt,
+          isChecked,
         });
         if (createdOrder) {
           resolve({

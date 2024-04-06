@@ -22,6 +22,7 @@ router.get(
   authUserMiddleWare,
   userController.getDetailsUser
 );
+router.get("/gettreatment/:id", userController.gettreatment);
 router.get("/gettreatmenthistory/:id", userController.gettreatmentHistory);
 router.post("/refresh-token", userController.refreshToken);
 router.post("/delete-many", authMiddleWare, userController.deleteMany);
