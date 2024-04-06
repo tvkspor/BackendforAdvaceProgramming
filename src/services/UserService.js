@@ -10,25 +10,30 @@ const createUser = (newUser) => {
       const checkUser = await User.findOne({
         email: email,
       });
-      const checkDoctor = await Doctor.findOne({
-        email: email,
-      });
       if (checkUser !== null) {
         resolve({
           status: "ERR",
           message: "The email is already",
         });
-      }
-      const isDoctor = false;
+      } 
+      const checkDoctor = await Doctor.findOne({
+        email: email,
+      });
       const hash = bcrypt.hashSync(password, 10);
       const createdUser = await User.create({
         email,
-        isDoctor,
         password: hash,
       });
       if (checkDoctor !== null) {
         createdUser.isDoctor = true;
-        createdUser = await createdUser.save();
+        try {
+          createdUser = await createdUser.save();
+        } catch (error) {
+          // Xử lý lỗi khi không thể lưu dữ liệu
+          console.error('Lỗi khi lưu dữ liệu:', error);
+          // Trả về một đối tượng lỗi hoặc giá trị phù hợp khác nếu cần
+          // Ví dụ: throw error; hoặc return null;
+        }
       }
       if (createdUser) {
         resolve({

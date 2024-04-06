@@ -1,6 +1,5 @@
 const UserService = require("../services/UserService");
 const JwtService = require("../services/JwtService");
-const Doctor = require("../models/DoctorModel");
 
 const createUser = async (req, res) => {
   try {
