@@ -247,11 +247,22 @@ const logoutUser = async (req, res) => {
       message: "Logout successfully",
     });
   } catch (e) {
+      return res.status(404).json({
+        message: e,
+      });
+  }
+};
+
+const assignWork = async (req, res) => {
+  try{
+    const response = await UserService.assignWork;
+    return res.status(200).json(response);
+  } catch(e){
     return res.status(404).json({
       message: e,
     });
   }
-};
+}
 module.exports = {
   createUser,
   loginUser,
@@ -266,4 +277,5 @@ module.exports = {
   refreshToken,
   logoutUser,
   deleteMany,
+  assignWork,
 };

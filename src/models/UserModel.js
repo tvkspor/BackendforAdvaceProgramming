@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema(
         OrderId: { type: mongoose.Schema.Types.ObjectId, ref: "orders" },
       },
     ],
+    doctortask: [
+      {
+        calender: {type: Date},
+        task: {type: String},
+      }
+    ],
   },
   {
     timestamps: true,

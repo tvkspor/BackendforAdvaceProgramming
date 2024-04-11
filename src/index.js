@@ -20,7 +20,7 @@ app.use(cookieParser())
 
 routes(app);
 
-mongoose.connect(`mongodb+srv://tmtuan120704:tvk553266@cluster0.rxoml7p.mongodb.net/`)
+mongoose.connect(`mongodb://localhost:27017/`)
     .then(() => {
          console.log('Connect Db success!')
     })

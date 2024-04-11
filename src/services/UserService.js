@@ -1,11 +1,13 @@
 const User = require("../models/UserModel");
+const Doctor = require("../models/DoctorModel");
 const Order = require("../models/OrderProduct");
+const Booking = require("../models/BookingModel");
 const bcrypt = require("bcrypt");
 const { genneralAccessToken, genneralRefreshToken } = require("./JwtService");
 
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
-    const { name, email, password, confirmPassword, phone } = newUser;
+    const { email, password, confirmPassword } = newUser;
     try {
       const checkUser = await User.findOne({
         email: email,
@@ -15,14 +17,26 @@ const createUser = (newUser) => {
           status: "ERR",
           message: "The email is already",
         });
-      }
+      } 
+      const checkDoctor = await Doctor.findOne({
+        email: email,
+      });
       const hash = bcrypt.hashSync(password, 10);
       const createdUser = await User.create({
-        name,
         email,
         password: hash,
-        phone,
       });
+      if (checkDoctor !== null) {
+        createdUser.isDoctor = true;
+        try {
+          createdUser = await createdUser.save();
+        } catch (error) {
+          // Xử lý lỗi khi không thể lưu dữ liệu
+          console.error('Lỗi khi lưu dữ liệu:', error);
+          // Trả về một đối tượng lỗi hoặc giá trị phù hợp khác nếu cần
+          // Ví dụ: throw error; hoặc return null;
+        }
+      }
       if (createdUser) {
         resolve({
           status: "OK",
@@ -305,6 +319,10 @@ const getDetailsUser = (id) => {
   });
 };
 
+const assignWork = (data) => {
+  
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -317,4 +335,5 @@ module.exports = {
   getAllUser,
   getDetailsUser,
   deleteManyUser,
+  assignWork,
 };
