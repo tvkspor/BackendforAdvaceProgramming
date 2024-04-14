@@ -30,7 +30,43 @@ const getAllDoctor = async (req, res) => {
   }
 };
 
+const getAllDoctorCardiology = async (req, res) => {
+  try {
+    const response = await DoctorService.getAllDoctorCardiology();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getAllDoctorNervesurgery = async (req, res) => {
+  try {
+    const response = await DoctorService.getAllDoctorNervesurgery();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getAllDepartmentDoctor = async (req, res) => {
+  try {
+    const response = await DoctorService.getAllDepartmentDoctor();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 module.exports = {
   createDoctor,
   getAllDoctor,
+  getAllDepartmentDoctor,
+  getAllDoctorCardiology,
+  getAllDoctorNervesurgery,
 };

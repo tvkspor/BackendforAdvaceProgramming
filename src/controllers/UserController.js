@@ -119,6 +119,43 @@ const updatetreatmentHistory = async (req, res) => {
     });
   }
 };
+const updateEventData = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const data = req.body;
+    if (!userId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The userId is required",
+      });
+    }
+    const response = await UserService.updateEventData(userId, data);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const updateMedicine = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const data = req.body;
+    if (!userId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The userId is required",
+      });
+    }
+    const response = await UserService.updateMedicine(userId, data);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
 
 const gettreatmentHistory = async (req, res) => {
   try {
@@ -138,6 +175,24 @@ const gettreatmentHistory = async (req, res) => {
   }
 };
 
+const getdoctorCourse = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The userId is required",
+      });
+    }
+    const response = await UserService.getdoctorCourse(userId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const gettreatment = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -148,6 +203,24 @@ const gettreatment = async (req, res) => {
       });
     }
     const response = await UserService.gettreatment(userId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getEventData = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The userId is required",
+      });
+    }
+    const response = await UserService.getEventData(userId);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
@@ -257,9 +330,13 @@ module.exports = {
   loginUser,
   updateUser,
   updatetreatmentCourseUser,
+  updateEventData,
   updatetreatmentHistory,
+  updateMedicine,
   gettreatmentHistory,
+  getdoctorCourse,
   gettreatment,
+  getEventData,
   deleteUser,
   getAllUser,
   getDetailsUser,

@@ -51,7 +51,55 @@ const getAllDoctor = () => {
   });
 };
 
+const getAllDoctorCardiology = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allName = await Doctor.find({ department: "cardiology" });
+      resolve({
+        status: "OK",
+        message: "Success",
+        data: allName,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllDoctorNervesurgery = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allName = await Doctor.find({ department: "nerve surgery" });
+      resolve({
+        status: "OK",
+        message: "Success",
+        data: allName,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllDepartmentDoctor = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allDepartment = await Doctor.distinct("department");
+      resolve({
+        status: "OK",
+        message: "Success",
+        data: allDepartment,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createDoctor,
   getAllDoctor,
+  getAllDepartmentDoctor,
+  getAllDoctorCardiology,
+  getAllDoctorNervesurgery,
 };

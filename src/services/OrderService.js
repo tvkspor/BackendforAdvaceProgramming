@@ -11,6 +11,7 @@ const createOrder = (newOrder) => {
       totalPrice,
       fullName,
       address,
+      type,
       city,
       phone,
       user,
@@ -232,6 +233,23 @@ const getAllOrder = () => {
   });
 };
 
+const getAllOrderUnchecked = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allOrder = await Order.find({
+        isChecked: false,
+      });
+      resolve({
+        status: "OK",
+        message: "Success",
+        data: allOrder,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createOrder,
   getAllOrderDetails,
@@ -239,4 +257,5 @@ module.exports = {
   getOrderDetails,
   cancelOrderDetails,
   getAllOrder,
+  getAllOrderUnchecked,
 };

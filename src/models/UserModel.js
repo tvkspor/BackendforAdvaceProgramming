@@ -13,10 +13,18 @@ const userSchema = new mongoose.Schema(
     dateofbirth: { type: Date },
     sex: { type: String },
     treatmentcourse: [{}],
+    eventData: [
+      {
+        date: { type: Number },
+        month: { type: Number },
+        year: { type: Number },
+        type: { type: String, default: "warning" },
+        content: { type: String },
+      },
+    ],
     treatmenthistory: [
       {
         day: { type: String },
-        doctor: { type: mongoose.Schema.Types.ObjectId, ref: "doctors" },
         doctorname: { type: String },
         information_daily: { type: String },
       },
@@ -24,7 +32,15 @@ const userSchema = new mongoose.Schema(
     doctorcourse: [
       {
         patientName: { type: String },
+        nameOrder: { type: String },
+        progress: { type: Number },
         OrderId: { type: mongoose.Schema.Types.ObjectId, ref: "orders" },
+        Medicine: [
+          {
+            type: { type: String },
+            medicinename: { type: String },
+          },
+        ],
       },
     ],
   },

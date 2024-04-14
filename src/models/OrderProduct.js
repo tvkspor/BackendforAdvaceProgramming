@@ -21,6 +21,7 @@ const orderSchema = new mongoose.Schema(
       phone: { type: Number, required: true },
     },
     paymentMethod: { type: String, required: true },
+    type: { type: String, default: "" },
     itemsPrice: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },

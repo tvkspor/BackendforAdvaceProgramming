@@ -134,6 +134,7 @@ const updatetreatmentCourseUser = (id) => {
         );
         const data = {
           patientName: updatedUser.name,
+          nameOrder: orderItem.name,
           OrderId: id,
         };
         const updatedDoctor = await User.findByIdAndUpdate(
@@ -157,8 +158,11 @@ const updatetreatmentCourseUser = (id) => {
 const updatetreatmentHistory = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkUser = await User.findOne({
+      const checkOrder = await Order.findOne({
         _id: id,
+      });
+      const checkUser = await User.findOne({
+        _id: checkOrder.user,
       });
       if (checkUser === null) {
         resolve({
@@ -167,9 +171,71 @@ const updatetreatmentHistory = (id, data) => {
         });
       }
       const updatedUser = await User.findByIdAndUpdate(
-        id,
+        checkUser._id,
         {
           $push: { treatmenthistory: data },
+        },
+        { new: true }
+      );
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: updatedUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const updateMedicine = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkOrder = await Order.findOne({
+        _id: id,
+      });
+
+      const checkUser = await User.findOne({
+        name: checkOrder.doctor,
+      });
+
+      const updateddoctorcourse = checkUser.doctorcourse.find(
+        (course) => course.OrderId.toString() === id
+      );
+
+      updateddoctorcourse.Medicine.push(data);
+
+      await checkUser.save();
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const updateEventData = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkOrder = await Order.findOne({
+        _id: id,
+      });
+      const checkUser = await User.findOne({
+        _id: checkOrder.user,
+      });
+      if (checkUser === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      const updatedUser = await User.findByIdAndUpdate(
+        checkUser._id,
+        {
+          $push: { eventData: data },
         },
         { new: true }
       );
@@ -206,6 +272,30 @@ const gettreatmentHistory = (id) => {
     }
   });
 };
+
+const getdoctorCourse = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({
+        _id: id,
+      });
+      if (user === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      resolve({
+        status: "OK",
+        message: "SUCESS",
+        data: user.doctorcourse,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const gettreatment = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -222,6 +312,29 @@ const gettreatment = (id) => {
         status: "OK",
         message: "SUCESS",
         data: user.treatmentcourse,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getEventData = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({
+        _id: id,
+      });
+      if (user === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      resolve({
+        status: "OK",
+        message: "SUCESS",
+        data: user.eventData,
       });
     } catch (e) {
       reject(e);
@@ -310,9 +423,13 @@ module.exports = {
   loginUser,
   updateUser,
   updatetreatmentCourseUser,
+  updateEventData,
   updatetreatmentHistory,
+  updateMedicine,
   gettreatmentHistory,
+  getdoctorCourse,
   gettreatment,
+  getEventData,
   deleteUser,
   getAllUser,
   getDetailsUser,

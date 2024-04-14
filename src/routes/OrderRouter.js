@@ -20,5 +20,10 @@ router.delete(
   OrderController.cancelOrderDetails
 );
 router.get("/get-all-order", authMiddleWare, OrderController.getAllOrder);
+router.get(
+  "/get-all-order-unchecked",
+  authMiddleWare,
+  OrderController.getAllOrderUnchecked
+);
 
 module.exports = router;

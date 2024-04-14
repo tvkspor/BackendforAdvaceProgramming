@@ -15,6 +15,8 @@ router.put(
   "/update-treatmenthistory/:id",
   userController.updatetreatmentHistory
 );
+router.put("/update-eventdata/:id", userController.updateEventData);
+router.put("/update-medicine/:id", userController.updateMedicine);
 router.delete("/delete-user/:id", authMiddleWare, userController.deleteUser);
 router.get("/getAll", userController.getAllUser);
 router.get(
@@ -24,6 +26,8 @@ router.get(
 );
 router.get("/gettreatment/:id", userController.gettreatment);
 router.get("/gettreatmenthistory/:id", userController.gettreatmentHistory);
+router.get("/geteventdata/:id", userController.getEventData);
+router.get("/getdoctorcourse/:id", userController.getdoctorCourse);
 router.post("/refresh-token", userController.refreshToken);
 router.post("/delete-many", authMiddleWare, userController.deleteMany);
 
