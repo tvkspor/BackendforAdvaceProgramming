@@ -38,22 +38,8 @@ const getAllbooking = async (req, res) => {
     }
 }
 
-const getInfor = async (req, res) => {
-    try{
-        const CCCD = req.params.CCCD;
-        const response = await BookingService.getInfor(CCCD);
-        return res.status(200).json(response);
-    } catch(error){
-        // Xử lý lỗi nếu có
-        return res.status(500).json({
-            status: 'ERR',
-            message: error.message || 'An error occurred while processing the request'
-        });
-    }
-}
 
 module.exports= {
     createBooking,
     getAllbooking,
-    getInfor,
 }

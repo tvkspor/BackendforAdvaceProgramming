@@ -26,6 +26,5 @@ router.get("/gettreatment/:id", userController.gettreatment);
 router.get("/gettreatmenthistory/:id", userController.gettreatmentHistory);
 router.post("/refresh-token", userController.refreshToken);
 router.post("/delete-many", authMiddleWare, userController.deleteMany);
-router.post("/assign-work",authMiddleWare, userController.assignWork);
 
 module.exports = router;

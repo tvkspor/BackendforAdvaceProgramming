@@ -319,10 +319,6 @@ const getDetailsUser = (id) => {
   });
 };
 
-const assignWork = (data) => {
-  
-};
-
 module.exports = {
   createUser,
   loginUser,
@@ -335,5 +331,4 @@ module.exports = {
   getAllUser,
   getDetailsUser,
   deleteManyUser,
-  assignWork,
 };

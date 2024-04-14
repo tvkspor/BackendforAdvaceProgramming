@@ -7,7 +7,6 @@ const {
 } = require("../middleware/authMiddleware");
 
 router.post("/create", BookingController.createBooking);
-router.get("/get-Allbooking/:day", authMiddleWare, BookingController.getAllbooking);
-router.get("/get-infor/:CCCD", BookingController.getInfor);
+router.get("/get-Allbooking/:day", BookingController.getAllbooking);
 
 module.exports = router;

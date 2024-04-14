@@ -152,35 +152,8 @@ const getAllbooking = async (data) => {
     }
 }
 
-const getInfor = async(data) => {
-    try{
-        const CCCD = data;
-        const inforUser = await Booking.findOne({ 'detailed.CCCD': CCCD });
-        if (!inforUser) {
-            return {
-                status: 'ERR',
-                message: "Can't find user with that CCCD",
-            };
-        }
-        const user = inforUser.detailed.find(item => item.CCCD === CCCD);
-        if (!user) {
-            return {
-                status: 'ERR',
-                message: "Can't find user with that CCCD",
-            };
-        }
-        
-        return {
-            status: 'SUCCESS',
-            data: user,
-        };
-    } catch(error){
-        throw error;
-    }
-}
 
 module.exports={
     createBooking,
     getAllbooking,
-    getInfor,
 }
