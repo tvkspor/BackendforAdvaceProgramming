@@ -12,13 +12,12 @@ const orderSchema = new mongoose.Schema(
         },
         progress: { type: Number, default: 0 },
         doctor: { type: String, default: "" },
+        totalprice: { type: Number, default: " " },
       },
     ],
-    shippingAddress: {
-      fullName: { type: String, required: true },
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      phone: { type: Number, required: true },
+    addtionalInformation: {
+      CCCD: { type: String, required: true },
+      BHXH: { type: String, required: true },
     },
     paymentMethod: { type: String, required: true },
     type: { type: String, default: "" },

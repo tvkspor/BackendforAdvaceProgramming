@@ -1,5 +1,7 @@
 const User = require("../models/UserModel");
 const Order = require("../models/OrderProduct");
+const Medicine = require("../models/MedicineModel");
+const Product = require("../models/ProductModel");
 const bcrypt = require("bcrypt");
 const { genneralAccessToken, genneralRefreshToken } = require("./JwtService");
 
@@ -79,6 +81,31 @@ const loginUser = (userLogin) => {
   });
 };
 
+const changepassword = (email, password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        reject(new Error('User not found'));
+        return;
+      }
+      const hash = bcrypt.hashSync(password, 10);
+      user.password = hash; 
+      try {
+        await user.save();
+        resolve({
+          status: "OK",
+          message: "SUCCESS",
+        });
+      } catch (e) {
+        reject(new Error('FAILED TO SAVE USER'));
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 const updateUser = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -124,6 +151,7 @@ const updatetreatmentCourseUser = (id) => {
 
       const newid = checkOrder.user;
       for (const orderItem of checkOrder.orderItems) {
+        orderItem.totalprice = checkOrder.totalPrice;
         orderItem.doctor = a;
         const updatedUser = await User.findByIdAndUpdate(
           newid,
@@ -148,6 +176,85 @@ const updatetreatmentCourseUser = (id) => {
       resolve({
         status: "OK",
         message: "SUCCESS",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const updateProgress = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log(data);
+      const checkOrder = await Order.findOne({
+        _id: id,
+      });
+      const checkUser = await User.findOne({
+        _id: checkOrder.user,
+      });
+      if (checkUser === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      const updatedusercourse = checkUser.treatmentcourse.find(
+        (course) => course.totalprice === checkOrder.totalPrice
+      );
+      const updateUser = await User.findOneAndUpdate(
+        { _id: checkUser._id, "treatmentcourse._id": updatedusercourse._id },
+        { $set: { "treatmentcourse.$.progress": data.progress } },
+        { new: true }
+      );
+
+      const checkDoctor = await User.findOne({
+        name: checkOrder.doctor,
+      });
+
+      const updateDoctor = await User.findOneAndUpdate(
+        {
+          name: checkOrder.doctor,
+          "doctorcourse.OrderId": id,
+        },
+        { $set: { "doctorcourse.$.progress": data.progress } },
+        { new: true }
+      );
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: updateDoctor,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const updateComment = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkProduct = await Product.findOne({
+        _id: id,
+      });
+      if (checkProduct === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      const updatedProduct = await Product.findByIdAndUpdate(
+        checkProduct._id,
+        {
+          $push: { Comment: data },
+        },
+        { new: true }
+      );
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: updatedProduct,
       });
     } catch (e) {
       reject(e);
@@ -195,17 +302,58 @@ const updateMedicine = (id, data) => {
         _id: id,
       });
 
+      const checkMedicine = await Medicine.findOne({
+        name: data.medicinename,
+      });
       const checkUser = await User.findOne({
+        _id: checkOrder.user,
+      });
+
+      const updatedusercourse = checkUser.treatmentcourse.find(
+        (course) => course.totalprice === checkOrder.totalPrice
+      );
+
+      var newPrice = checkMedicine.price + checkOrder.totalPrice;
+
+      // console.log(updatedusercourse);
+      // const updateUser = await checkUser.treatmentcourse.findByIdAndUpdate(
+      //   updatedusercourse._id,
+      //   {
+      //     totalprice: newPrice,
+      //   },
+      //   {
+      //     new: true,
+      //   }
+      // );
+
+      const updateUser = await User.findOneAndUpdate(
+        { _id: checkUser._id, "treatmentcourse._id": updatedusercourse._id },
+        { $set: { "treatmentcourse.$.totalprice": newPrice } },
+        { new: true }
+      );
+
+      //await checkUser.save();
+      const updateOrder = await Order.findByIdAndUpdate(
+        id,
+        {
+          totalPrice: newPrice,
+        },
+        {
+          new: true,
+        }
+      );
+
+      const checkDoctor = await User.findOne({
         name: checkOrder.doctor,
       });
 
-      const updateddoctorcourse = checkUser.doctorcourse.find(
+      const updateddoctorcourse = checkDoctor.doctorcourse.find(
         (course) => course.OrderId.toString() === id
       );
 
       updateddoctorcourse.Medicine.push(data);
 
-      await checkUser.save();
+      await checkDoctor.save();
 
       resolve({
         status: "OK",
@@ -423,9 +571,11 @@ module.exports = {
   loginUser,
   updateUser,
   updatetreatmentCourseUser,
+  updateProgress,
   updateEventData,
   updatetreatmentHistory,
   updateMedicine,
+  updateComment,
   gettreatmentHistory,
   getdoctorCourse,
   gettreatment,
@@ -434,4 +584,5 @@ module.exports = {
   getAllUser,
   getDetailsUser,
   deleteManyUser,
+  changepassword,
 };

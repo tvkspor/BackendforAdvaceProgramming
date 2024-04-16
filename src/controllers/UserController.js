@@ -1,5 +1,8 @@
 const UserService = require("../services/UserService");
 const JwtService = require("../services/JwtService");
+const sendEmail = require("../sendEmail");
+const User = require("../models/UserModel");
+const crypto = require("crypto");
 
 const createUser = async (req, res) => {
   try {
@@ -63,6 +66,48 @@ const loginUser = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+ 
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({
+      email: email
+    });
+    
+    // Gửi email đặt lại mật khẩu
+    const resetToken = crypto.randomBytes(32).toString('hex');
+      
+      user.resetToken = resetToken;
+      
+      user.resetTokenExpiry = Date.now() + 3600000;
+      
+      await user.save();
+
+      // Gửi email cho người dùng với URL để đặt lại mật khẩu
+    const resetPasswordLink = `http://localhost:3000/reset-password?token=${resetToken}=${email}`;
+    // const resetPasswordLink = `http://localhost:3000/reset-password`;
+    sendEmail(email,"CHANGE PASSWORD", resetPasswordLink );
+
+    return res.status(200).json({ message: "Password reset email sent" });
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try{
+    const {password, confirmpassword} = req.body;
+    const email = req.params.email;
+    const response = await UserService.changepassword(email, password);
+    return res.status(200).json(response);
+  } catch(e){
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -101,6 +146,25 @@ const updatetreatmentCourseUser = async (req, res) => {
   }
 };
 
+const updateProgress = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const data = req.body;
+    if (!userId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The userId is required",
+      });
+    }
+    const response = await UserService.updateProgress(userId, data);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const updatetreatmentHistory = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -119,6 +183,26 @@ const updatetreatmentHistory = async (req, res) => {
     });
   }
 };
+
+const updateComment = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const data = req.body;
+    if (!userId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The userId is required",
+      });
+    }
+    const response = await UserService.updateComment(userId, data);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const updateEventData = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -140,15 +224,15 @@ const updateEventData = async (req, res) => {
 
 const updateMedicine = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const Id = req.params.id;
     const data = req.body;
-    if (!userId) {
+    if (!Id) {
       return res.status(200).json({
         status: "ERR",
         message: "The userId is required",
       });
     }
-    const response = await UserService.updateMedicine(userId, data);
+    const response = await UserService.updateMedicine(Id, data);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
@@ -328,9 +412,13 @@ const logoutUser = async (req, res) => {
 module.exports = {
   createUser,
   loginUser,
+  forgotPassword,
+  resetPassword,
   updateUser,
   updatetreatmentCourseUser,
+  updateProgress,
   updateEventData,
+  updateComment,
   updatetreatmentHistory,
   updateMedicine,
   gettreatmentHistory,

@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema(
     dateofbirth: { type: Date },
     sex: { type: String },
     treatmentcourse: [{}],
+    BHXH: { type: String },
+    CCCD: { type: String },
     eventData: [
       {
         date: { type: Number },
@@ -33,7 +35,7 @@ const userSchema = new mongoose.Schema(
       {
         patientName: { type: String },
         nameOrder: { type: String },
-        progress: { type: Number },
+        progress: { type: Number, default: 0 },
         OrderId: { type: mongoose.Schema.Types.ObjectId, ref: "orders" },
         Medicine: [
           {
