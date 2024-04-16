@@ -2,8 +2,11 @@ const User = require("../models/UserModel");
 const Doctor = require("../models/DoctorModel");
 const Order = require("../models/OrderProduct");
 const Booking = require("../models/BookingModel");
+const SendEmail = require("../SendEmail");
 const bcrypt = require("bcrypt");
+const crypto = require('crypto');
 const { genneralAccessToken, genneralRefreshToken } = require("./JwtService");
+const port = process.env.PORT || 3001;
 
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
@@ -319,6 +322,70 @@ const getDetailsUser = (id) => {
   });
 };
 
+const checkEmail = (req) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Tìm người dùng trong cơ sở dữ liệu bằng emai
+      const{email} = req.body;
+      const user = await User.findOne({
+        email: email
+      });
+      // Kiểm tra xem người dùng có tồn tại không
+      if (!user) {
+        reject(new Error('User not found'));
+        return;
+      }
+      
+      // Tạo reset token duy nhất
+      
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      
+      user.resetToken = resetToken;
+      
+      user.resetTokenExpiry = Date.now() + 900000; // Thời hạn của reset token là 15 phút
+      
+      await user.save();
+      
+      // Gửi email chứa đường liên kết reset
+      const resetURL = `http://localhost:3000/reset-password?token=${resetToken}=${email}`;
+
+      // Gửi email cho người dùng với URL để đặt lại mật khẩu
+      await SendEmail(email, 'Reset Your Password', resetURL);
+
+      resolve('Email sent successfully');
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+
+const changepassword = (email, password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        reject(new Error('User not found'));
+        return;
+      }
+      const hash = bcrypt.hashSync(password, 10);
+      user.password = hash; 
+      try {
+        await user.save();
+        resolve({
+          status: "OK",
+          message: "SUCCESS",
+        });
+      } catch (e) {
+        reject(new Error('FAILED TO SAVE USER'));
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+
 module.exports = {
   createUser,
   loginUser,
@@ -331,4 +398,6 @@ module.exports = {
   getAllUser,
   getDetailsUser,
   deleteManyUser,
+  checkEmail,
+  changepassword,
 };

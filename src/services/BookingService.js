@@ -1,4 +1,5 @@
 const Booking = require ("../models/BookingModel");
+const SendEmail = require("../SendEmail");
 
 const createBooking = async (data) => {
     try {
@@ -18,7 +19,10 @@ const createBooking = async (data) => {
         }
 
         const checkday = await Booking.findOne({ date: date });
-        var newBooking = null;
+        const subject = 'Confirmation letter for appointment';
+        const recipientEmail = detailedData.email;
+        let text = null;
+        let newBooking = null;
 
         if (checkday !== null ) {
             var totalMorning = checkday.totalMorning;
@@ -42,6 +46,7 @@ const createBooking = async (data) => {
                     if (newDetailed) {
                         ++newBooking.morningCounter;
                         newDetailed.stt = newBooking.morningCounter;
+                        text = `Bạn đã đặt lịch khám thành công vào ngày ${date}, số thứ tự của bạn là ${newDetailed.stt}.`;
                     }
                     // Lưu newBooking đã được cập nhật
                     try {
@@ -73,6 +78,7 @@ const createBooking = async (data) => {
                     if (newDetailed) {
                         ++newBooking.eveningCounter;
                         newDetailed.stt = newBooking.eveningCounter;
+                        text = `Bạn đã đặt lịch khám thành công vào ngày ${date}, số thứ tự của bạn là ${newDetailed.stt}.`;
                     }
                     // Lưu newBooking đã được cập nhật
                     try {
@@ -108,6 +114,7 @@ const createBooking = async (data) => {
                     },
                     { new: true }
                 );
+                text = `Bạn đã đặt lịch khám thành công vào ngày ${date}, số thứ tự của bạn là 1`;
             } else{
                 await Booking.findOneAndUpdate(
                     { 
@@ -119,8 +126,12 @@ const createBooking = async (data) => {
                     },
                     { new: true }
                 );
+                text = `Bạn đã đặt lịch khám thành công vào ngày ${date}, số thứ tự của bạn là 1`;
             }
         }
+
+        SendEmail(recipientEmail, subject, text);
+        
         return {
             status: 'SUCCESS',
             message: 'Booking created successfully',
@@ -151,7 +162,6 @@ const getAllbooking = async (data) => {
         throw error;
     }
 }
-
 
 module.exports={
     createBooking,

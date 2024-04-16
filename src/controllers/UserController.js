@@ -1,5 +1,6 @@
 const UserService = require("../services/UserService");
 const JwtService = require("../services/JwtService");
+const sendEmail = require("../SendEmail");
 
 const createUser = async (req, res) => {
   try {
@@ -253,6 +254,30 @@ const logoutUser = async (req, res) => {
   }
 };
 
+const checkEmail = async (req, res) => {
+  try {
+    const response = await UserService.checkEmail(req);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const changepassword = async (req, res) => {
+  try{
+    const {password, confirmpassword} = req.body;
+    const email = req.params.email;
+    const response = await UserService.changepassword(email, password);
+    return res.status(200).json(response);
+  } catch(e){
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -267,4 +292,6 @@ module.exports = {
   refreshToken,
   logoutUser,
   deleteMany,
+  checkEmail,
+  changepassword,
 };

@@ -39,6 +39,7 @@ const getAllbooking = async (req, res) => {
 }
 
 
+
 module.exports= {
     createBooking,
     getAllbooking,
