@@ -2,77 +2,31 @@ const BookingService = require("../services/BookingService");
 
 const createBooking = async (req, res) => {
     try {
-        const {
-            date,
-            name,
-            cccd,
-            birth,
-            email,
-            sex,
-            number,
-            session,
-            address,
-            symptom,
-        } = req.body;
+        const { date, name, cccd, birth, email, sex, number, session, address, symptom } = req.body;
         // Kiểm tra các trường bắt buộc
-        if (
-            !date ||
-            !name ||
-            !cccd ||
-            !birth ||
-            !email ||
-            !sex ||
-            !number ||
-            session === undefined ||
-            !address ||
-            !symptom
-        ) {
+        if (!date || !name || !cccd || !birth || !email || !sex || !number || session === undefined || !address || !symptom) {
             return res.status(400).json({
-                status: "ERR",
-                message: "Missing required input fields",
+                status: 'ERR',
+                message: 'Missing required input fields'
             });
         }
         // Gọi service để tạo booking
         const response = await BookingService.createBooking(req.body);
-
         // Trả về kết quả thành công
         return res.status(200).json(response);
     } catch (error) {
         // Xử lý lỗi nếu có
         return res.status(500).json({
-            status: "ERR",
-            message:
-                error.message || "An error occurred while processing the request",
+            status: 'ERR',
+            message: error.message || 'An error occurred while processing the request'
         });
     }
-};
+}
 
-const getAllbooking = async (req, res) => {
+const getAllBooking = async (req, res) => {
     try {
-        const day = req.params.day;
-        const response = await BookingService.getAllbooking();
-        return res.status(200).json(response);
-    } catch (error) {
-        // Xử lý lỗi nếu có
-        return res.status(500).json({
-            status: "ERR",
-            message:
-                error.message || "An error occurred while processing the request",
-        });
-    }
-};
-
-const updateBooking = async (req, res) => {
-    try {
-        const Bookingid = req.params.id
-        const data = req.body
-        if (!Bookingid) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The booking is required'
-            })
-        }
-        const response = await BookingService.updateBooking(Bookingid, data)
+        const { limit, page, sort, filter } = req.query
+        const response = await BookingService.getAllBooking(Number(limit) || null, Number(page) || 0, sort, filter)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
@@ -81,65 +35,56 @@ const updateBooking = async (req, res) => {
     }
 }
 
-const getDetailsBooking = async (req, res) => {
+const getAllbooking = async (req, res) => {
     try {
-        const Bookingid = req.params.id
-        if (!Bookingid) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The booking is required'
-            })
-        }
-        const response = await BookingService.getDetailsBooking(Bookingid)
-        return res.status(200).json(response)
-    } catch (e) {
-        return res.status(404).json({
-            message: e
-        })
+        const day = req.params.day;
+        const response = await BookingService.getAllbooking(day);
+        return res.status(200).json(response);
+    } catch (error) {
+        // Xử lý lỗi nếu có
+        return res.status(500).json({
+            status: 'ERR',
+            message: error.message || 'An error occurred while processing the request'
+        });
+    }
+}
+
+const findBooking = async (req, res) => {
+    try {
+        const CCCD = req.params.CCCD;
+        const response = await BookingService.findBooking(CCCD);
+        return res.status(200).json(response);
+    } catch (error) {
+        // Xử lý lỗi nếu có
+        return res.status(500).json({
+            status: 'ERR',
+            message: error.message || 'An error occurred while processing the request'
+        });
     }
 }
 
 const deleteBooking = async (req, res) => {
     try {
-        const Bookingid = req.params.id
-        if (!Bookingid) {
+        const BookingId = req.params.id
+        if (!BookingId) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The Booking is required'
+                message: 'The BookingId is required'
             })
         }
-        const response = await BookingService.deleteBooking(Bookingid)
+        const response = await BookingService.deleteBooking(BookingId)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
             message: e
         })
     }
-}
-
-const deleteManyBooking = async (req, res) => {
-    try {
-        const id = req.body.id
-        if (!id) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The id is required'
-            })
-        }
-        const response = await BookingService.deleteManyBooking(id)
-        return res.status(200).json(response)
-    } catch (e) {
-        return res.status(404).json({
-            message: e
-        })
-    }
-}
+  }
 
 module.exports = {
     createBooking,
     getAllbooking,
-    updateBooking,
-    getDetailsBooking,
+    findBooking,
     deleteBooking,
-    deleteManyBooking
-};
+    getAllBooking
+}

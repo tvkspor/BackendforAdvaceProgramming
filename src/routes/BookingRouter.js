@@ -5,13 +5,10 @@ const {
     authUserMiddleWare,
     authMiddleWare,
 } = require("../middleware/authMiddleware");
-const Booking = require("../models/BookingModel");
 
 router.post("/create", BookingController.createBooking);
-router.get("/get-all", BookingController.getAllbooking);
-router.put("/update/:id", authMiddleWare, BookingController.updateBooking)
-router.get("/get-details/:id", BookingController.getDetailsBooking)
+router.get("/get-Allbooking/:day", authMiddleWare, BookingController.getAllbooking);
+router.get("/find-Booking/:CCCD", authUserMiddleWare, BookingController.findBooking);
 router.delete("/delete/:id", authMiddleWare, BookingController.deleteBooking)
-router.post("/delete-many", authMiddleWare, BookingController.deleteManyBooking)
-
+router.get("/get-all", BookingController.getAllBooking);
 module.exports = router;

@@ -2,7 +2,7 @@ const Item = require("../models/ItemModel");
 
 const createItem = (newItem) => {
   return new Promise(async (resolve, reject) => {
-    const { name, price, component, availability, image, ID, importDate} =
+    const { name, price, component, availability, image, importDate} =
       newItem;
     try {
       const checkItem = await Item.findOne({
@@ -15,7 +15,7 @@ const createItem = (newItem) => {
         });
       }
       const newItem = await Item.create({
-        name, price, component, availability, image, ID, importDate
+        name, price, component, availability, image, importDate
       });
       if (newItem) {
         resolve({

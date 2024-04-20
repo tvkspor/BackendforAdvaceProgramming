@@ -380,6 +380,7 @@ const updateEventData = (id, data) => {
           message: "The user is not defined",
         });
       }
+      data.month = data.month - 1;
       const updatedUser = await User.findByIdAndUpdate(
         checkUser._id,
         {

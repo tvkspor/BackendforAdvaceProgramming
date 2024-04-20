@@ -150,7 +150,7 @@ message: e
 
 const getAllType = async (req, res) => {
   try {
-      const response = await MedicineService.getAllType()
+      const response = await MedicineService.getAllTypeMedicine()
 return res.status(200).json(response)
   } catch (e) {
       return res.status(404).json({
@@ -161,6 +161,7 @@ return res.status(200).json(response)
 
 module.exports = {
   createMedicine,
+  getAllType,
   getAllTypeMedicine,
   getAllTablets,
   getAllLiquor,
@@ -170,5 +171,5 @@ module.exports = {
     deleteMedicine,
     getAllMedicine,
     deleteMany,
-    getAllType
+    getAllTypeMedicine
 };

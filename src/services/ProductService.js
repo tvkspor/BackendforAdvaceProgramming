@@ -123,6 +123,30 @@ const getDetailsProduct = (id) => {
     })
 }
 
+const getAllComment= (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const product = await Product.findOne({
+                _id: id
+            })
+            if (product === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The product is not defined'
+                })
+            }
+
+            resolve({
+                status: 'OK',
+                message: 'SUCESS',
+                data: product.Comment
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 const getAllProduct = (limit, page, sort, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -191,6 +215,7 @@ module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
+    getAllComment,
     deleteProduct,
     getAllProduct,
     deleteManyProduct,

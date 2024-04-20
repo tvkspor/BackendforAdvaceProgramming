@@ -54,6 +54,23 @@ const getDetailsProduct = async (req, res) => {
         })
     }
 }
+const getAllComment = async (req, res) => {
+    try {
+        const productId = req.params.id
+        if (!productId) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The productId is required'
+            })
+        }
+        const response = await ProductService.getAllComment(productId)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
 
 const deleteProduct = async (req, res) => {
     try {
@@ -118,6 +135,7 @@ module.exports = {
     createProduct,
     updateProduct,
     getDetailsProduct,
+    getAllComment,
     deleteProduct,
     getAllProduct,
     deleteMany,

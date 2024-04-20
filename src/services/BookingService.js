@@ -1,45 +1,28 @@
 const Booking = require("../models/BookingModel");
+const SendEmail = require("../SendEmail");
 
 const createBooking = async (data) => {
     try {
-        const {
-            date,
-            name,
-            cccd,
-            birth,
-            email,
-            sex,
-            number,
-            session,
-            address,
-            symptom,
-        } = data;
-        const detailedData = {
-            name,
-            cccd,
-            birth,
-            email,
-            sex,
-            number,
-            session,
-            address,
-            symptom,
-        };
+        const { date, name, cccd, birth, email, sex, number, session, address, symptom } = data;
+        const detailedData = { name, cccd, birth, email, sex, number, session, address, symptom };
 
         const checkClient = await Booking.findOne({
             date: date,
-            "detailed.cccd": cccd,
+            "detailed.cccd": cccd
         });
 
         if (checkClient) {
             return {
-                status: "ERR",
+                status: 'ERR',
                 message: "you've already booked",
             };
         }
 
         const checkday = await Booking.findOne({ date: date });
-        var newBooking = null;
+        const subject = 'Confirmation letter for appointment';
+        const recipientEmail = detailedData.email;
+        let text = null;
+        let newBooking = null;
 
         if (checkday !== null) {
             var totalMorning = checkday.totalMorning;
@@ -57,14 +40,13 @@ const createBooking = async (data) => {
                         },
                         { new: true }
                     );
-                    const newDetailed = newBooking.detailed.find(
-                        (obj) => obj.cccd == cccd
-                    );
+                    const newDetailed = newBooking.detailed.find(obj => obj.cccd == cccd);
 
                     // Cập nhật trường stt
                     if (newDetailed) {
                         ++newBooking.morningCounter;
                         newDetailed.stt = newBooking.morningCounter;
+                        text = `Bạn đã đặt lịch khám thành công vào ngày ${date}, số thứ tự của bạn là ${newDetailed.stt}.`;
                     }
                     // Lưu newBooking đã được cập nhật
                     try {
@@ -74,7 +56,7 @@ const createBooking = async (data) => {
                     }
                 } else {
                     return {
-                        status: "ERR",
+                        status: 'ERR',
                         message: "we are full of capacity in the morning",
                     };
                 }
@@ -90,14 +72,13 @@ const createBooking = async (data) => {
                         },
                         { new: true }
                     );
-                    const newDetailed = newBooking.detailed.find(
-                        (obj) => obj.cccd == cccd
-                    );
+                    const newDetailed = newBooking.detailed.find(obj => obj.cccd == cccd);
 
                     // Cập nhật trường stt
                     if (newDetailed) {
                         ++newBooking.eveningCounter;
                         newDetailed.stt = newBooking.eveningCounter;
+                        text = ` Bạn đã đặt lịch khám thành công vào ngày ${date}, số thứ tự của bạn là ${newDetailed.stt}.`;
                     }
                     // Lưu newBooking đã được cập nhật
                     try {
@@ -107,7 +88,7 @@ const createBooking = async (data) => {
                     }
                 } else {
                     return {
-                        status: "ERR",
+                        status: 'ERR',
                         message: "we are full of capacity in the evening",
                     };
                 }
@@ -115,16 +96,13 @@ const createBooking = async (data) => {
 
             if (!newBooking) {
                 return {
-                    status: "ERR",
+                    status: 'ERR',
                     message: "Failed to update booking",
                 };
             }
         } else {
             // Tạo booking mới nếu không tìm thấy booking cho ngày đã chọn
-            newBooking = await Booking.create({
-                date: date,
-                detailed: [detailedData],
-            });
+            newBooking = await Booking.create({ date: date, detailed: [detailedData] });
             if (session) {
                 await Booking.findOneAndUpdate(
                     {
@@ -136,6 +114,7 @@ const createBooking = async (data) => {
                     },
                     { new: true }
                 );
+                text = `Bạn đã đặt lịch khám thành công vào ngày ${date}, số thứ tự của bạn là 1`;
             } else {
                 await Booking.findOneAndUpdate(
                     {
@@ -147,11 +126,15 @@ const createBooking = async (data) => {
                     },
                     { new: true }
                 );
+                text = `Bạn đã đặt lịch khám thành công vào ngày ${date}, số thứ tự của bạn là 1`;
             }
         }
+
+        SendEmail(recipientEmail, subject, text);
+
         return {
-            status: "SUCCESS",
-            message: "Booking created successfully",
+            status: 'SUCCESS',
+            message: 'Booking created successfully',
             data: newBooking,
         };
     } catch (error) {
@@ -159,26 +142,71 @@ const createBooking = async (data) => {
     }
 };
 
-const getAllbooking = async () => {
+const getAllbooking = async (data) => {
     try {
-        //const date = data;
-        const inforOfDay = await Booking.find();
+        const date = data;
+        const inforOfDay = await Booking.find({ date: date });
         if (inforOfDay !== null) {
             return {
-                status: "SUCCESS",
-                data: inforOfDay,
-                // data: inforOfDay.map(info => info.detailed),
+                status: 'SUCCESS',
+                data: inforOfDay.map(info => info.detailed),
             };
-        } else {
+        }
+        else {
             return {
-                status: "ERR",
+                status: 'ERR',
                 message: "can't find that day",
             };
         }
     } catch (error) {
         throw error;
     }
+}
+
+const getAllBooking = (limit, page, sort, filter) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let query = Booking.find();
+
+            // Thực hiện lọc nếu filter được cung cấp
+            if (filter && filter.length === 2) {
+                const label = filter[0];
+                const filterValue = filter[1];
+                query = query.where(label).regex(new RegExp(filterValue, 'i'));
+            }
+
+            // Thực hiện sắp xếp nếu sort được cung cấp
+            if (sort && sort.length === 2) {
+                const [order, sortBy] = sort;
+                query = query.sort({ [sortBy]: order === 'asc' ? 1 : -1 });
+            } else {
+                // Sắp xếp mặc định nếu không có sort được cung cấp
+                query = query.sort({ createdAt: -1, updatedAt: -1 });
+            }
+
+            // Thực hiện phân trang
+            if (limit) {
+                query = query.limit(limit).skip(page * limit);
+            }
+
+            // Thực hiện truy vấn và resolve promise với kết quả
+            const allBooking = await query.exec();
+            const totalBooking = await Booking.countDocuments();
+
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: allBooking,
+                total: totalBooking,
+                pageCurrent: Number(page) + 1,
+                totalPage: Math.ceil(totalBooking / limit)
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
 };
+
 
 // const getAllTypeBooking = () => {
 //     return new Promise(async (resolve, reject) => {
@@ -195,30 +223,43 @@ const getAllbooking = async () => {
 //     })
 // }
 
-const updateBooking = (id, data) => {
+const findBooking = (CCCD) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const checkBooking = await Booking.findOne({
-                _id: id
-            })
-            if (checkBooking === null) {
+            const bookings = await Booking.find({
+                "detailed.cccd": CCCD,
+            });
+            if (!bookings || bookings.length === 0) {
                 resolve({
                     status: 'ERR',
-                    message: 'The booking is not defined'
-                })
+                    message: 'No booking found for the provided CCCD'
+                });
+            } else {
+                const collectedElements = [];
+                bookings.forEach(booking => {
+                    booking.detailed.forEach(item => {
+                        if (item.cccd == CCCD) {
+                            var date = booking.date;
+                            var item = item;
+                            let newItem = {
+                                date: date,
+                                item: item,
+                            };
+                            collectedElements.push(newItem);
+                        }
+                    });
+                });
+                resolve({
+                    status: 'OK',
+                    message: 'Bookings found',
+                    collectedElements: collectedElements,
+                });
             }
-
-            const updatedBooking = await Booking.findByIdAndUpdate(id, data, { new: true })
-            resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: updatedBooking
-            })
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
-}
+    });
+};
 
 const deleteBooking = (id) => {
     return new Promise(async (resolve, reject) => {
@@ -258,35 +299,12 @@ const deleteManyBooking = (ids) => {
     })
 }
 
-const getDetailsBooking = (id) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const booking = await Booking.findOne({
-                _id: id
-            })
-            if (booking === null) {
-                resolve({
-                    status: 'ERR',
-                    message: 'The booking is not defined'
-                })
-            }
-
-            resolve({
-                status: 'OK',
-                message: 'SUCESS',
-                data: booking
-            })
-        } catch (e) {
-            reject(e)
-        }
-    })
-}
 
 module.exports = {
+    getAllBooking,
     createBooking,
     getAllbooking,
-    getDetailsBooking,
     deleteManyBooking,
+    findBooking,
     deleteBooking,
-    updateBooking
 };

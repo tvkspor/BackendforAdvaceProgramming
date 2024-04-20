@@ -295,6 +295,7 @@ const gettreatment = async (req, res) => {
   }
 };
 
+
 const getEventData = async (req, res) => {
   try {
     const userId = req.params.id;

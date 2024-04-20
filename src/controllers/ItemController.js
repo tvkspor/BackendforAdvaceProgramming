@@ -2,9 +2,9 @@ const ItemService = require("../services/ItemService");
 
 const createItem = async (req, res) => {
   try {
-    const { name, price, component, availability, image, importDate, ID } =
+    const { name, price, component, availability, image, importDate } =
       req.body;
-    if (!name || !price || !component || !availability || !importDate ||  !ID) {
+    if (!name || !price || !component || !availability || !importDate) {
       return res.status(200).json({
         status: "ERR",
         message: "The input is required ",
