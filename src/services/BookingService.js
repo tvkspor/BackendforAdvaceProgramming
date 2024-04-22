@@ -1,5 +1,5 @@
 const Booking = require("../models/BookingModel");
-const SendEmail = require("../SendEmail");
+const SendEmail = require("../sendEmail");
 
 const createBooking = async (data) => {
     try {
