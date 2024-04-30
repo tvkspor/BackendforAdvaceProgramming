@@ -81,10 +81,29 @@ const deleteBooking = async (req, res) => {
     }
   }
 
+  const deleteManyBooking = async (req, res) => {
+    try {
+        const ids = req.body.ids
+        if (!ids) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The ids is required'
+            })
+        }
+        const response = await BookingService.deleteManyBooking(ids)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 module.exports = {
     createBooking,
     getAllbooking,
     findBooking,
     deleteBooking,
-    getAllBooking
+    getAllBooking,
+    deleteManyBooking,
 }
