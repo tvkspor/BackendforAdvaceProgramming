@@ -8,8 +8,7 @@ const userSchema = new mongoose.Schema(
     ID: { type: String },
     importDate: { type: Date },
     image: { type: String},
-    //sex: { type: String },
-    //department: { type: String },
+    description: {type: String},
   },
   {
     timestamps: true,

@@ -2,7 +2,7 @@ const ItemService = require("../services/ItemService");
 
 const createItem = async (req, res) => {
   try {
-    const { name, price, component, availability, image, importDate } =
+    const { name, price, component, availability, image, importDate, description } =
       req.body;
     if (!name || !price || !component || !availability || !importDate) {
       return res.status(200).json({
