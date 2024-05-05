@@ -79,7 +79,7 @@ const forgotPassword = async (req, res) => {
       
       user.resetToken = resetToken;
       
-      user.resetTokenExpiry = Date.now() + 3600000;
+      user.resetTokenExpiry = Date.now() + 180000;
       
       await user.save();
 
@@ -97,9 +97,9 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try{
-    const {password, confirmpassword} = req.body;
+    const {password, confirmpassword,token} = req.body;
     const email = req.params.email;
-    const response = await UserService.changepassword(email, password);
+    const response = await UserService.changepassword(email, password,token);
     return res.status(200).json(response);
   } catch(e){
     return res.status(404).json({

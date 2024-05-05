@@ -70,7 +70,7 @@ const getAllDoctor = async (req, res) => {
 
 const getAllTypedoctor = async (req, res) => {
   try {
-    const response = await DoctorService.getAllTypedoctor();
+    const response = await DoctorService.getAllTypeDoctor();
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({

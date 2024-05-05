@@ -3,6 +3,7 @@ const Order = require("../models/OrderProduct");
 const Medicine = require("../models/MedicineModel");
 const Product = require("../models/ProductModel");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const { genneralAccessToken, genneralRefreshToken } = require("./JwtService");
 
 const createUser = (newUser) => {
@@ -81,7 +82,7 @@ const loginUser = (userLogin) => {
   });
 };
 
-const changepassword = (email, password) => {
+const changepassword = (email, password, token) => {
   return new Promise(async (resolve, reject) => {
     try {
       const user = await User.findOne({ email: email });
@@ -89,8 +90,14 @@ const changepassword = (email, password) => {
         reject(new Error('User not found'));
         return;
       }
+      if(user.resetTokenExpiry < Date.now() || user.resetToken !== token ){
+        reject(new Error ('Reset token is invalid or expire'));
+        return; 
+      }
       const hash = bcrypt.hashSync(password, 10);
-      user.password = hash; 
+      user.password = hash;
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      user.resetToken = resetToken;
       try {
         await user.save();
         resolve({

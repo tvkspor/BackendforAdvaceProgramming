@@ -6,15 +6,15 @@ const sendEmail = (recipientEmail, subject, text) => {
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: 'tuyen060204@gmail.com',
-        pass: 'dxxk yvgk rvwd irwb',
+        user: 'hospital07.19@gmail.com',
+        pass: 'yjrr zuct ufoo aupw',
       },
     });
   
 
  // Định nghĩa nội dung email
  const mailOptions = {
-    from: 'tuyen060204@gmail.com',
+    from: 'hospital07.19@gmail.com',
     to: recipientEmail,
     subject: subject,
     text: text,
