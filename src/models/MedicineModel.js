@@ -8,7 +8,7 @@ const medicineSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     countInStock: { type: Number, required: true },
     description: { type: String },
-    selled: { type: Number },
+    selled: { type: Date },
   },
   {
     timestamps: true,

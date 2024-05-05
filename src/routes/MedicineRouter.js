@@ -4,7 +4,7 @@ const MedicineController = require("../controllers/MedicineController");
 const { authMiddleWare } = require("../middleware/authMiddleware");
 
 router.post("/create", MedicineController.createMedicine);
-router.get("/getalltype", MedicineController.getAllTypeMedicine);
+router.get("/get-all-type", MedicineController.getAllTypeMedicine);
 router.get("/getalltabletsname", MedicineController.getAllTablets);
 router.get("/getallliquorsname", MedicineController.getAllLiquor);
 router.get("/getallpowdersname", MedicineController.getAllPowder);
