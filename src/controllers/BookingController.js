@@ -42,7 +42,7 @@ const getAllbooking = async (req, res) => {
         return res.status(200).json(response);
     } catch (error) {
         // Xử lý lỗi nếu có
-        return res.status(500).json({
+        return res.status(50).json({
             status: 'ERR',
             message: error.message || 'An error occurred while processing the request'
         });
