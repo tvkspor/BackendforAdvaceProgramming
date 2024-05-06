@@ -12,7 +12,6 @@ const createOrder = (newOrder) => {
       fullName,
       address,
       type,
-      city,
       phone,
       user,
       isChecked,
