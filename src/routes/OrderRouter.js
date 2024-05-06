@@ -26,4 +26,5 @@ router.get(
   OrderController.getAllOrderUnchecked
 );
 
+router.post("/delete-many", authMiddleWare, OrderController.deleteManyOrder);
 module.exports = router;

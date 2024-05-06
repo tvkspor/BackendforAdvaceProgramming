@@ -249,7 +249,22 @@ const getAllOrderUnchecked = () => {
   });
 };
 
+const deleteManyOrder = (ids) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await Order.deleteMany({ _id: ids });
+      resolve({
+        status: "OK",
+        message: "Delete order success",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
+  deleteManyOrder,
   createOrder,
   getAllOrderDetails,
   updateOrder,
