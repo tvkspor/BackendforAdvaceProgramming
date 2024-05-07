@@ -83,7 +83,7 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     // Gửi email cho người dùng với URL để đặt lại mật khẩu
-    const resetPasswordLink = `http://localhost:3000/reset-password?token=${resetToken}=${email}`;
+    const resetPasswordLink = `${process.env.baseUrl}/reset-password?token=${resetToken}=${email}`;
     // const resetPasswordLink = `http://localhost:3000/reset-password`;
     sendEmail(email, "CHANGE PASSWORD", resetPasswordLink);
 
