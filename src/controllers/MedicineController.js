@@ -51,7 +51,16 @@ const getAllPowder = async (req, res) => {
     });
   }
 };
-
+const getAllGel = async (req, res) => {
+  try {
+    const response = await MedicineService.getAllGel();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
 const getAllTypeMedicine = async (req, res) => {
   try {
     const response = await MedicineService.getAllTypeMedicine();
@@ -65,99 +74,104 @@ const getAllTypeMedicine = async (req, res) => {
 
 const updateMedicine = async (req, res) => {
   try {
-      const MedicineId = req.params.id
-      const data = req.body
-      if (!MedicineId) {
-          return res.status(200).json({
-              status: 'ERR',
-              message: 'The MedicineId is required'
-          })
-      }
-      const response = await MedicineService.updateMedicine(MedicineId, data)
-      return res.status(200).json(response)
+    const MedicineId = req.params.id;
+    const data = req.body;
+    if (!MedicineId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The MedicineId is required",
+      });
+    }
+    const response = await MedicineService.updateMedicine(MedicineId, data);
+    return res.status(200).json(response);
   } catch (e) {
-      return res.status(404).json({
-          message: e
-      })
+    return res.status(404).json({
+      message: e,
+    });
   }
-}
+};
 
 const getDetailsMedicine = async (req, res) => {
   try {
-      const MedicineId = req.params.id
-      if (!MedicineId) {
-          return res.status(200).json({
-              status: 'ERR',
-              message: 'The MedicineId is required'
-          })
-      }
-      const response = await MedicineService.getDetailsMedicine(MedicineId)
-      return res.status(200).json(response)
+    const MedicineId = req.params.id;
+    if (!MedicineId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The MedicineId is required",
+      });
+    }
+    const response = await MedicineService.getDetailsMedicine(MedicineId);
+    return res.status(200).json(response);
   } catch (e) {
-      return res.status(404).json({
-          message: e
-      })
+    return res.status(404).json({
+      message: e,
+    });
   }
-}
+};
 
 const deleteMedicine = async (req, res) => {
   try {
-      const MedicineId = req.params.id
-      if (!MedicineId) {
-          return res.status(200).json({
-              status: 'ERR',
-              message: 'The MedicineId is required'
-          })
-      }
-      const response = await MedicineService.deleteMedicine(MedicineId)
-      return res.status(200).json(response)
+    const MedicineId = req.params.id;
+    if (!MedicineId) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The MedicineId is required",
+      });
+    }
+    const response = await MedicineService.deleteMedicine(MedicineId);
+    return res.status(200).json(response);
   } catch (e) {
-      return res.status(404).json({
-          message: e
-      })
+    return res.status(404).json({
+      message: e,
+    });
   }
-}
+};
 
 const deleteMany = async (req, res) => {
   try {
-      const ids = req.body.ids
-      if (!ids) {
-          return res.status(200).json({
-              status: 'ERR',
-              message: 'The ids is required'
-          })
-      }
-      const response = await MedicineService.deleteManyMedicine(ids)
-      return res.status(200).json(response)
+    const ids = req.body.ids;
+    if (!ids) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "The ids is required",
+      });
+    }
+    const response = await MedicineService.deleteManyMedicine(ids);
+    return res.status(200).json(response);
   } catch (e) {
-      return res.status(404).json({
-          message: e
-      })
+    return res.status(404).json({
+      message: e,
+    });
   }
-}
+};
 
 const getAllMedicine = async (req, res) => {
   try {
-      const { limit, page, sort, filter } = req.query
-      const response = await MedicineService.getAllMedicine(Number(limit) || null, Number(page) || 0, sort, filter)
-      return res.status(200).json(response)
+    const { limit, page, sort, filter } = req.query;
+    const response = await MedicineService.getAllMedicine(
+      Number(limit) || null,
+      Number(page) || 0,
+      sort,
+      filter
+    );
+    return res.status(200).json(response);
   } catch (e) {
-      return res.status(404).json({
-message: e
-      })
+    return res.status(404).json({
+      message: e,
+    });
   }
-}
+};
 
 const getAllType = async (req, res) => {
   try {
-      const response = await MedicineService.getAllType()
-return res.status(200).json(response)
+    const response = await MedicineService.getAllType();
+    return res.status(200).json(response);
   } catch (e) {
-      return res.status(404).json({
-          message: e
-      })
+    return res.status(404).json({
+      message: e,
+    });
   }
-}
+};
 
 module.exports = {
   createMedicine,
@@ -165,10 +179,11 @@ module.exports = {
   getAllTablets,
   getAllLiquor,
   getAllPowder,
+  getAllGel,
   updateMedicine,
-    getDetailsMedicine,
-    deleteMedicine,
-    getAllMedicine,
-    deleteMany,
-    getAllType
+  getDetailsMedicine,
+  deleteMedicine,
+  getAllMedicine,
+  deleteMany,
+  getAllType,
 };

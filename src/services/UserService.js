@@ -337,7 +337,10 @@ const updateMedicine = (id, data) => {
 
       const updateUser = await User.findOneAndUpdate(
         { _id: checkUser._id, "treatmentcourse._id": updatedusercourse._id },
-        { $set: { "treatmentcourse.$.totalprice": newPrice } },
+        {
+          $set: { "treatmentcourse.$.totalprice": newPrice },
+          $push: { "treatmentcourse.$.Medicine": data },
+        },
         { new: true }
       );
 

@@ -55,7 +55,7 @@ const getAllTypeMedicine = () => {
 const getAllTablets = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allName = await Medicine.find({ type: "Viên nén" });
+      const allName = await Medicine.find({ type: "Viên Nén" });
       resolve({
         status: "OK",
         message: "Success",
@@ -70,7 +70,7 @@ const getAllTablets = () => {
 const getAllLiquor = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allName = await Medicine.find({ type: "Dung dịch" });
+      const allName = await Medicine.find({ type: "Dung Dịch" });
       resolve({
         status: "OK",
         message: "Success",
@@ -86,6 +86,21 @@ const getAllPowder = () => {
   return new Promise(async (resolve, reject) => {
     try {
       const allName = await Medicine.find({ type: "Bột" });
+      resolve({
+        status: "OK",
+        message: "Success",
+        data: allName,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllGel = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allName = await Medicine.find({ type: "Gel" });
       resolve({
         status: "OK",
         message: "Success",
@@ -255,6 +270,7 @@ module.exports = {
   getAllTablets,
   getAllLiquor,
   getAllPowder,
+  getAllGel,
 
   updateMedicine,
   getDetailsMedicine,

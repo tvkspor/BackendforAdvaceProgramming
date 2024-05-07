@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
     treatmenthistory: [
       {
         day: { type: String },
+        month: { type: String },
         doctorname: { type: String },
         information_daily: { type: String },
       },
@@ -45,8 +46,8 @@ const userSchema = new mongoose.Schema(
         ],
       },
     ],
-    resetTokenExpiry:{type: Date},
-    resetToken: {type: String},
+    resetTokenExpiry: { type: Date },
+    resetToken: { type: String },
   },
   {
     timestamps: true,

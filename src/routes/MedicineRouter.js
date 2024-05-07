@@ -8,6 +8,7 @@ router.get("/get-all-type", MedicineController.getAllTypeMedicine);
 router.get("/getalltabletsname", MedicineController.getAllTablets);
 router.get("/getallliquorsname", MedicineController.getAllLiquor);
 router.get("/getallpowdersname", MedicineController.getAllPowder);
+router.get("/getallgelsname", MedicineController.getAllGel);
 
 router.put("/update/:id", authMiddleWare, MedicineController.updateMedicine);
 router.get("/get-details/:id", MedicineController.getDetailsMedicine);

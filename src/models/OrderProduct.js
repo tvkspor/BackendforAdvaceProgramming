@@ -29,6 +29,12 @@ const orderSchema = new mongoose.Schema(
       type: String,
     },
     isChecked: { type: Boolean, default: false },
+    Medicine: [
+      {
+        type: { type: String },
+        medicinename: { type: String },
+      },
+    ],
   },
   {
     timestamps: true,
