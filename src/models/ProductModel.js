@@ -11,7 +11,12 @@ const productSchema = new mongoose.Schema(
     description: { type: String },
     discount: { type: Number },
     selled: { type: Number },
-    Comment: [{ comment: { type: String } }],
+    Comment: [
+      {
+        userName: { type: String },
+        comment: { type: String },
+      },
+    ],
   },
   {
     timestamps: true,
