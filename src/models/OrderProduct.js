@@ -20,6 +20,7 @@ const orderSchema = new mongoose.Schema(
       BHXH: { type: String, required: true },
     },
     paymentMethod: { type: String, required: true },
+    userName: { type: String, default: "" },
     type: { type: String, default: "" },
     itemsPrice: { type: Number, required: true },
     totalPrice: { type: Number, required: true },

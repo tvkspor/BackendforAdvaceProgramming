@@ -68,6 +68,7 @@ const createOrder = (newOrder) => {
           paymentMethod,
           itemsPrice,
           totalPrice,
+          userName: fullName,
           user: user,
           isChecked,
         });

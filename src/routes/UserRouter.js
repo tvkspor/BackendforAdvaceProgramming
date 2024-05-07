@@ -20,6 +20,7 @@ router.put(
   userController.updatetreatmentHistory
 );
 router.put("/update-eventdata/:id", userController.updateEventData);
+router.put("/update-eventdata2/:id", userController.updateEventData2);
 router.put("/update-comment/:id", userController.updateComment);
 router.put("/update-medicine/:id", userController.updateMedicine);
 router.delete("/delete-user/:id", authMiddleWare, userController.deleteUser);

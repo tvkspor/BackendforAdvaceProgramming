@@ -2,6 +2,7 @@ const User = require("../models/UserModel");
 const Order = require("../models/OrderProduct");
 const Medicine = require("../models/MedicineModel");
 const Product = require("../models/ProductModel");
+const Doctor = require("../models/DoctorModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { genneralAccessToken, genneralRefreshToken } = require("./JwtService");
@@ -25,7 +26,7 @@ const createUser = (newUser) => {
         email,
         password: hash,
         phone,
-        CCCD
+        CCCD,
       });
       if (createdUser) {
         resolve({
@@ -88,16 +89,16 @@ const changepassword = (email, password, token) => {
     try {
       const user = await User.findOne({ email: email });
       if (!user) {
-        reject(new Error('User not found'));
+        reject(new Error("User not found"));
         return;
       }
-      if(user.resetTokenExpiry < Date.now() || user.resetToken !== token ){
-        reject(new Error ('Reset token is invalid or expire'));
-        return; 
+      if (user.resetTokenExpiry < Date.now() || user.resetToken !== token) {
+        reject(new Error("Reset token is invalid or expire"));
+        return;
       }
       const hash = bcrypt.hashSync(password, 10);
       user.password = hash;
-      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetToken = crypto.randomBytes(32).toString("hex");
       user.resetToken = resetToken;
       try {
         await user.save();
@@ -106,13 +107,13 @@ const changepassword = (email, password, token) => {
           message: "SUCCESS",
         });
       } catch (e) {
-        reject(new Error('FAILED TO SAVE USER'));
+        reject(new Error("FAILED TO SAVE USER"));
       }
     } catch (error) {
       reject(error);
     }
   });
-}
+};
 
 const updateUser = (id, data) => {
   return new Promise(async (resolve, reject) => {
@@ -407,6 +408,40 @@ const updateEventData = (id, data) => {
   });
 };
 
+const updateEventData2 = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkDoctor = await Doctor.findOne({
+        _id: id,
+      });
+      const checkUser = await User.findOne({
+        name: checkDoctor.name,
+      });
+      if (checkUser === null) {
+        resolve({
+          status: "ERR",
+          message: "The user is not defined",
+        });
+      }
+      data.month = data.month - 1;
+      const updatedUser = await User.findByIdAndUpdate(
+        checkUser._id,
+        {
+          $push: { eventData: data },
+        },
+        { new: true }
+      );
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: updatedUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const gettreatmentHistory = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -582,6 +617,7 @@ module.exports = {
   updatetreatmentCourseUser,
   updateProgress,
   updateEventData,
+  updateEventData2,
   updatetreatmentHistory,
   updateMedicine,
   updateComment,
